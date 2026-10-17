@@ -2,6 +2,7 @@
   "entries": [
     { "path": "frontend" },
     { "path": "presentations" },
-    { "path": "architecture" }
+    { "path": "architecture" },
+    { "path": "security" }
   ]
 }
