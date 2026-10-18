@@ -22,10 +22,16 @@ My-Skills/
 ├── presentations/
 │   └── pptx-design/                         # Programmatic 16:9 slide deck design with python-pptx
 │       └── SKILL.md
-└── architecture/
-    └── graphify/                            # Codebase knowledge graph, community detection & queries
+├── architecture/
+│   └── graphify/                            # Codebase knowledge graph, community detection & queries
+│       ├── SKILL.md
+│       └── references/
+└── media/
+    └── reel-maker/                          # Beat-synced branded 4K vertical reels from raw clips
         ├── SKILL.md
-        └── references/
+        ├── references/
+        │   └── workflow.md
+        └── assets/                          # Compositor engine, project config template, helpers
 ```
 
 ---
@@ -38,12 +44,13 @@ My-Skills/
 | **`security/`** | [`github-publish-guard`](./security/github-publish-guard/SKILL.md) | Mandatory pre-publish auditor that scans working files and full git commit history for GitHub Acceptable Use Policy (AUP) compliance, forbidden executables/binaries (`.exe`, `.dll`, `.msi`, `.apk`), third-party company/trademark names in repos or binaries, leaked secrets/tokens, and third-party PII before any push. |
 | **`presentations/`** | [`pptx-design`](./presentations/pptx-design/SKILL.md) | Modern, image-free widescreen (`16:9`) PowerPoint presentation engineering using `python-pptx` (card grids, terminal code windows, KPI callouts, comparison tables, and typographic hierarchy). |
 | **`architecture/`** | [`graphify`](./architecture/graphify/SKILL.md) | Transforms codebases, documentation, and papers into persistent, queryable knowledge graphs with community detection and audit trails. |
+| **`media/`** | [`reel-maker`](./media/reel-maker/SKILL.md) | Energetic, beat-synced, brand-styled 4K vertical reels (Reels/TikTok/Shorts) from raw phone clips: Python/OpenCV compositor (whip pans, zoom punches, flashes, letter-in titles, embers), librosa beat grid and drop detection, Demucs voice isolation with ducking, word-timed subtitles, per-shot color matching with a highlight-safe look, and a preview → 4K verification loop. |
 
 ---
 
 ## Global Installation (Antigravity)
 
-Because skills are grouped inside category folders (`frontend/`, `security/`, `presentations/`, `architecture/`), register each category folder in your global `~/.gemini/config/skills.json` so the one-level skill scanner discovers every skill automatically across all workspaces:
+Because skills are grouped inside category folders (`frontend/`, `security/`, `presentations/`, `architecture/`, `media/`), register each category folder in your global `~/.gemini/config/skills.json` so the one-level skill scanner discovers every skill automatically across all workspaces:
 
 ```json
 {
@@ -51,7 +58,8 @@ Because skills are grouped inside category folders (`frontend/`, `security/`, `p
     { "path": "~/path/to/My-Skills/frontend" },
     { "path": "~/path/to/My-Skills/security" },
     { "path": "~/path/to/My-Skills/presentations" },
-    { "path": "~/path/to/My-Skills/architecture" }
+    { "path": "~/path/to/My-Skills/architecture" },
+    { "path": "~/path/to/My-Skills/media" }
   ]
 }
 ```

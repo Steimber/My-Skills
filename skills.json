@@ -3,6 +3,7 @@
     { "path": "frontend" },
     { "path": "presentations" },
     { "path": "architecture" },
-    { "path": "security" }
+    { "path": "security" },
+    { "path": "media" }
   ]
 }
