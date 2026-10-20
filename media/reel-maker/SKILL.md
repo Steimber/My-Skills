@@ -1,57 +1,52 @@
 ---
 name: reel-maker
-description: "Trigger: reels, TikTok, Shorts, edit clips into video, best moments, beat sync, vertical 4K, brand intro. Build energetic beat-synced branded vertical reels from raw clips."
+description: "Trigger: reels, TikTok, Shorts, beat sync, vertical 4K, testimonial voice, brand intro. Build beat-synced branded vertical reels from raw clips."
 license: Apache-2.0
 metadata:
   author: "Steimber"
-  version: "1.1"
+  version: "1.2"
 ---
 
 ## Activation Contract
 
-Load when the user wants raw phone clips/photos edited into short vertical videos (Reels/TikTok/Shorts), highlight cuts, music sync, titles/subtitles, or brand-styled intros.
+Load when raw phone clips/photos must become short vertical videos: beat-synced cuts, titles/subtitles, brand intro/end card, color matching, testimonial voice isolation, music under speech.
 
 ## Hard Rules
 
-- Never lower quality: decode from originals every render, H.264 CRF ≤16, keep 4K when sources allow; one encode per output.
-- Never overwrite user originals; write new outputs to a separate `--out` dir.
-- Inspect every clip visually (contact sheets) before choosing moments; check rotation metadata per clip.
-- Verify every output: A/V durations match, no audio packet gap > 0.03 s, `ffmpeg -v error -f null` clean, ≈ -14 LUFS, contact-sheet review.
-- Keep all text inside the safe zone (15–72 % of height); never cover faces.
-- Never download copyrighted music; only use files the user provides, and warn platforms may mute them.
-- Confirm brand/place names heard in speech with the user before burning subtitles.
-- No synthesized SFX by default on music-driven reels (generic whooshes/booms read as off-music); `sfx` is opt-in on explicit request.
+- Never lower quality: decode originals each render, one H.264 encode (CRF 16 at 4K); never overwrite originals; finals go to a separate `--out`.
+- View every clip (contact sheets) before choosing windows; check rotation and A/V start offsets.
+- Verify each output with `tools/verify_media.py` (A/V diff, clean decode, packet gaps < 0.03 s, ~-14 LUFS, TP <= -1 dBTP), then a human contact-sheet pass.
+- Text inside 15-72 % of the height (hero group above 70 %), never over faces (`tools/textzone.py --faces`).
+- Judge speech on the FINAL MIX (`tools/verify_voice.py`); confirm names heard in speech before burning subtitles.
+- Only songs the user provides (platforms may mute them); fonts/logo are the user's. No synthesized SFX unless asked.
+- Each source range once across reels (`--table`, `tools/orb_repeats.py`).
 
 ## Decision Gates
 
 | Situation | Action |
 |-----------|--------|
-| Landscape clip in 9:16 | Center crop `ih*9/16`; shift x to keep the subject |
-| Wide sign/logo won't fit 9:16 | Two crops on consecutive beats |
-| Speech in a clip | Keep only that audio; Demucs-isolate voice; duck music 12 dB |
-| No music given | Ship silent cuts; suggest in-app platform audio |
-| Energy/brand requested | `assets/reel_engine.py --config <project>.py` |
-| Simple cut list only | `assets/build_music_reels_ffmpeg.py` (xfade) |
-| Color look | Per-shot match + look chain in decode; before/after first |
+| Landscape clip to 9:16 | `CENTER` crop; `REFRAME` follows the subject |
+| Talking head | wide/`tight=True` alternation, B-roll inserts over jump cuts |
+| Speech in a clip | `voice/quick.py`; noisy room: candidates + `evaluate.py` |
+| Speech over a sung song | instrumental bed (`tools/make_bed.py`), not deep ducking |
+| Color | LUT grade + shot matching; `look/before_after.py` first |
+| Plain cut list | `assets/build_music_reels_ffmpeg.py` |
 
 ## Execution Steps
 
-1. Inventory sources (ffprobe: size, fps, rotation, duration); 2 fps contact sheets; note good windows.
-2. Group clips into 2–3 themed reels (place / food / atmosphere) of 15–30 s.
-3. Music: `assets/analyze_songs.py key=path ... --out build/songs.json`; find the drop beat; transcribe for the hook.
-4. Copy `assets/project_example.py`, fill clips, songs, cut lists (in beats), brand text, fonts, hero video.
-5. Render `--preview` (540×960), review contact sheets, fix, then render 4K finals and verify.
+1. Inventory (`ffprobe`), `tools/contact_sheet.py`, pick good windows, group into 15-30 s reels.
+2. `tools/analyze_songs.py`, `tools/phrases.py`; verify the drop on the instrumental stem.
+3. Copy `assets/project_example.py`; fill clips, songs, beat cut lists, brand text, fonts, hero video.
+4. Voice reels: `tools/words.py`, `voice/` stem, `tools/make_bed.py`, `tools/gain_check.py`.
+5. `reel_engine.py --preview` (+ `--notext` for checks), fix, 4K finals, verify.
 
 ## Output Contract
 
-Return output paths, durations, per-reel timeline (segment, start, transition), verification numbers, unresolved risks (copyright, unheard audio).
+Output paths, durations, per-reel timeline (segment, start, transition), verification numbers, open risks (licensing, unheard audio, unconfirmed names).
 
 ## References
 
-- `references/workflow.md` — pitfalls, ffmpeg/Python fixes, effect specs.
-- `assets/reel_engine.py` — compositor; project data via `--config`, dirs via `--videos --music --assets --build-dir --out`.
-- `assets/project_example.py` — config template (clips, reels, palette, fonts, brand text).
-- `assets/analyze_songs.py` — beat grid + energy map.
-- `assets/grade_before_after.py` — before/after color sheet (`file@time[:crop]`).
-- `assets/sfx.py` — opt-in synthesized SFX + real ambience bed.
-- `assets/build_music_reels_ffmpeg.py` — simple xfade/ducking builder.
+- `references/workflow.md` - pitfalls, exact fixes, specs, tool cheat sheet.
+- `references/pipeline.md` - how the system was built: stages, numbers, review loop.
+- `assets/reel_engine.py`, `project_example.py` - compositor and config template.
+- `assets/look/` grade, reframe, LUT; `assets/voice/` isolation + scoring; `assets/tools/` analysis, verifiers; `assets/sfx.py` opt-in.

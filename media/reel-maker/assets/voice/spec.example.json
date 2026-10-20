@@ -1,0 +1,12 @@
+{
+  "language": "en",
+  "speakers": {
+    "A": {
+      "source": "clips/clip_10.mp4",
+      "ranges": [
+        {"start": 2.0, "end": 5.2, "text": "reference text spoken in this range, exactly as said"},
+        {"start": 7.0, "end": 10.4, "text": "reference text of the second range"}
+      ]
+    }
+  }
+}

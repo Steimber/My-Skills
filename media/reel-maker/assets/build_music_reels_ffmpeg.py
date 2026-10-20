@@ -2,7 +2,7 @@
 
     python build_music_reels_ffmpeg.py --videos clips --music music --build-dir build --out out [reel names...]
 
-Needs <build-dir>/songs.json from analyze_songs.py. Edit REELS below (placeholder names) for your project.
+Needs <build-dir>/songs.json from tools/analyze_songs.py. Edit REELS below (placeholder names) for your project.
 For the full compositor (whips, titles, embers) use reel_engine.py instead.
 """
 import argparse, json, subprocess
@@ -43,7 +43,7 @@ REELS = {
             ("v", "clip_09.mp4", 1.95, None, "crop=ih*9/16:ih:1159:0", [], 10.25),
         ],
         trans=[("fadewhite", 0.24), ("zoomin", 0.24), ("smoothleft", 0.24), ("smoothup", 0.24)],
-        voice="sep/htdemucs/voice_src/vocals.wav",  # Demucs-isolated speech of the last segment, relative to --build-dir
+        voice="voice/clip_09_cut.wav",  # isolated speech cut to start at the testimonial segment (clip time 1.95 here), relative to --build-dir
         subs=[  # (source start s, end s, text) of the testimonial clip; {\c&H00D7FF&} = accent color (BGR)
             (2.10, 3.30, "FIRST LINE"),
             (3.40, 4.30, "SECOND {\\c&H00D7FF&}ACCENT LINE"),

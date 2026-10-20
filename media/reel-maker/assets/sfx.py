@@ -154,7 +154,7 @@ def build_sfx(plan_, fps, total, out_wav, vid_dir, voice=(0.0, 0.0), ambience=No
             put(ambience_bed(vid_dir / ambience[1], sp["start"], dur + 0.2), t - 0.05, -8)
 
     track = track[: int(total * SR)]
-    if v1 > v0:  # keep the testimonial clean: SFX dip 10 dB while he talks (transition hit stays)
+    if v1 > v0:  # keep the speech clean: SFX dip 10 dB while someone talks (the transition hit stays)
         g = np.ones(len(track))
         i0, i1 = int((v0 + 0.25) * SR), int(v1 * SR)
         g[i0:i1] = db(-10)
